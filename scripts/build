@@ -1,0 +1,18 @@
+#!/bin/sh
+
+PROGNAME=${PROGNAME:-"init"}
+DIR=${DIR:-"demo"}
+CONFIG=${PWD}/${CONFIG:-"config.example"}
+OUT=${PWD}/${OUT:-"."}
+
+fname=${OUT}/${PROGNAME}.lua
+basedir=$(dirname $(dirname $0))
+
+echo "FILENAME ${PROGNAME}" > /tmp/build_config
+
+rm -f $fname
+cd ${basedir}
+lua scripts/pp.lua -Dconfig.default -D/tmp/build_config -D${CONFIG} src/main.lua >> $fname
+cd -
+find ${DIR} -type f | ${basedir}/scripts/mtar.lua ${DIR} >> $fname
+echo ]=======] >> $fname
